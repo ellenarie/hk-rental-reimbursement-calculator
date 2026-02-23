@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Hong Kong Rental Reimbursement – Assessable Income Estimator</title>
+
+  <!-- Google Analytics (GA4) – replace G-XXXXXXXXXX with your Measurement ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX');
+  </script>
+  <!-- End Google Analytics -->
+
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 20px auto; line-height: 1.5; color: #000; }
+    h1 { font-size: 22px; }
+    h2 { font-size: 18px; margin-top: 30px; }
+    label { display: block; margin: 8px 0 4px; }
+    input, select { padding: 5px; width: 260px; max-width: 100%; }
+    .row { display: flex; flex-wrap: wrap; gap: 40px; margin-top: 20px; }
+    .card { border: 1px solid #ccc; padding: 15px; border-radius: 6px; flex: 1; min-width: 260px; }
+    .result-line { margin: 4px 0; }
+    .highlight { font-weight: bold; }
+    .warning { color: #b22222; font-size: 13px; margin-top: 10px; }
+    button { margin-top: 15px; padding: 8px 14px; cursor: pointer; }
+    small { font-size: 12px; color: #555; }
+    a { color: #0645ad; }
+    .green { color: #008000; }
+  </style>
+</head>
+<body>
+  <h1>Hong Kong Rental Reimbursement – Assessable Income Estimator</h1>
+  <p>
+    This page gives a rough estimation of how a rental reimbursement scheme
+    (treated as a place of residence with Rental Value, “RV”) may change your assessable income
+    under Hong Kong salaries tax. It does not replace professional tax advice.
+  </p>
+  <p>
+    The figures are for one Hong Kong year of assessment
+    (from 1 April to 31 March of the following year).
+    Employment income typically includes salary, bonus, commissions, vested share awards,
+    stock option gains, and benefits in kind arising from your employment.
+  </p>
+  <p>
+    The ultimate goal of this tool is to compare the assessable income under
+    <strong>Scenario A (no rental reimbursement)</strong> and
+    <strong>Scenario B (with rental reimbursement)</strong>
+    and to show which scenario is more favourable in terms of lower assessable income.
+  </p>
+
+  <h2>1. Enter your figures</h2>
+  <div>
+    <label>Annual cash income from this employer in the year of assessment (salary + bonus etc.), HKD</label>
+    <input type="number" id="annualIncome" value="600000" min="0" step="1000">
+
+    <label>Monthly rent actually paid to landlord, HKD</label>
+    <input type="number" id="monthlyRent" value="20000" min="0" step="500">
+
+    <label>Monthly amount the employer will reimburse as housing, HKD</label>
+    <input type="number" id="monthlyReimbursed" value="20000" min="0" step="500">
+
+    <label>Type of accommodation</label>
+    <select id="accommodationType">
+      <option value="10">Residential unit / serviced apartment (10% RV)</option>
+      <option value="8">Hotel / hostel / boarding house – 2 rooms (8% RV)</option>
+      <option value="4">Hotel / hostel / boarding house – 1 room (4% RV)</option>
+    </select>
+
+    <p><small>
+      Assumptions: one Hong Kong employer; no other income; no deductions or personal allowances.
+      The aim is to compare assessable income (simplified) under two scenarios,
+      not to calculate final tax.
+    </small></p>
+
+    <button onclick="calculate()">Compare assessable income</button>
+  </div>
+
+  <div class="row" id="results" style="display:none;">
+    <div class="card">
+      <h2>Scenario A – No Rental Reimbursement</h2>
+      <div class="result-line" id="aIncome"></div>
+    </div>
+
+    <div class="card">
+      <h2>Scenario B – With Rental Reimbursement (RV method)</h2>
+      <div class="result-line" id="bCashIncome"></div>
+      <div class="result-line" id="bRVBase"></div>
+      <div class="result-line" id="bRentSuffered"></div>
+      <div class="result-line" id="bRVNet"></div>
+      <div class="result-line" id="bAssessable"></div>
+    </div>
+  </div>
+
+  <div class="card" id="comparison" style="display:none; margin-top:20px;">
+    <h2>2. Which scenario is more favourable?</h2>
+    <div class="result-line" id="diffIncome"></div>
+    <div class="result-line" id="noteRentSuffered"></div>
+
+    <h2>3. Evidence and IRD examples</h2>
+    <p>
+      For the rental reimbursement scheme to be accepted as a place of residence provided
+      (and not as a pure cash allowance), the employer should keep proper evidence such as:
+      stamped tenancy agreement, rent receipts and internal records showing that normal
+      landlord–tenant formalities are observed.
+    </p>
+    <p>
+      The treatment of Rental Value and “rent suffered” in this tool is broadly aligned with
+      the Inland Revenue Department’s examples in the pamphlet
+      <a href="https://www.ird.gov.hk/eng/pdf/pam44e.pdf" target="_blank" rel="noopener">
+        “How to tax the provision of a place of residence to the employee”
+      </a>, including situations where the employee bears part of the rent and the taxable
+      benefit effectively reflects RV minus rent paid by the employee.
+    </p>
+    <p class="warning">
+      Important:
+      <br>• This is a simplified estimator focusing on assessable income only. It does not calculate actual salaries tax or personal allowances.
+      <br>• The scheme only works as intended if the Inland Revenue Department accepts that a place of residence is provided and
+      the employer keeps sufficient documentation (lease, receipts, internal policy, etc.).
+      <br>• Actual tax treatment depends on IRD’s final assessment and your individual circumstances.
+    </p>
+    <p><small>
+      Useful references:
+      <br>• IRD – Housing Benefits: 
+      <a href="https://www.ird.gov.hk/eng/tax/ere_house.htm" target="_blank" rel="noopener">
+        https://www.ird.gov.hk/eng/tax/ere_house.htm
+      </a>
+      <br>• GovHK – How the Provision of a Place of Residence to an Employee is Taxed: 
+      <a href="https://www.gov.hk/en/residents/taxes/salaries/salariestax/chargeable/residence.htm" target="_blank" rel="noopener">
+        https://www.gov.hk/en/residents/taxes/salaries/salariestax/chargeable/residence.htm
+      </a>
+    </small></p>
+    <p><small>
+      © 2026 Your Name / Your Company. All rights reserved.
+    </small></p>
+  </div>
+
+  <script>
+    function calculate() {
+      const annualIncome = Number(document.getElementById('annualIncome').value) || 0;
+      const monthlyRent = Number(document.getElementById('monthlyRent').value) || 0;
+      const monthlyReimbursed = Number(document.getElementById('monthlyReimbursed').value) || 0;
+      const rvPercent = Number(document.getElementById('accommodationType').value) || 10;
+
+      // Scenario A – no rental reimbursement
+      const aAssessableIncome = annualIncome;
+
+      // Scenario B – with rental reimbursement
+      const annualReimbursed = monthlyReimbursed * 12;
+      const bCashIncome = Math.max(0, annualIncome - annualReimbursed); // package kept the same in concept
+
+      // RV base: % of income from employer (simplified)
+      const rvBase = bCashIncome * (rvPercent / 100);
+
+      // Rent suffered: actual rent - reimbursed (if positive)
+      const rentSuffered = Math.max(0, (monthlyRent - monthlyReimbursed) * 12);
+
+      // Net RV after deducting rent suffered (cannot be negative)
+      const rvNet = Math.max(0, rvBase - rentSuffered);
+
+      const bAssessableIncome = bCashIncome + rvNet;
+
+      // Decide which scenario is more favourable (lower assessable income)
+      const lowerIsB = bAssessableIncome < aAssessableIncome;
+
+      // Display Scenario A
+      document.getElementById('aIncome').innerHTML =
+        (lowerIsB ? "" : "<span class='green'>") +
+        "Assessable income (simplified) under Scenario A: HKD " + aAssessableIncome.toLocaleString() +
+        (lowerIsB ? "" : "</span>");
+
+      // Display Scenario B
+      document.getElementById('bCashIncome').textContent =
+        "Cash income after converting part to housing (Scenario B): HKD " + bCashIncome.toLocaleString();
+      document.getElementById('bRVBase').textContent =
+        "Rental value before rent suffered (" + rvPercent + "% of income): HKD " + rvBase.toLocaleString();
+      document.getElementById('bRentSuffered').textContent =
+        "Rent suffered (annual rent not reimbursed): HKD " + rentSuffered.toLocaleString();
+      document.getElementById('bRVNet').textContent =
+        "Net rental value after rent suffered: HKD " + rvNet.toLocaleString();
+      document.getElementById('bAssessable').innerHTML =
+        (lowerIsB ? "<span class='green'>" : "") +
+        "Assessable income (simplified) under Scenario B: HKD " + bAssessableIncome.toLocaleString() +
+        (lowerIsB ? "</span>" : "");
+
+      // Comparison of assessable income
+      const diff = aAssessableIncome - bAssessableIncome;
+      let diffText;
+      if (Math.abs(diff) < 1) {
+        diffText = "Both scenarios give roughly the same assessable income (simplified).";
+      } else if (diff > 0) {
+        diffText = "Scenario B (with rental reimbursement) gives a lower assessable income by about HKD " +
+          diff.toLocaleString() + ", and is more favourable in this simplified comparison.";
+      } else {
+        diffText = "Scenario A (no rental reimbursement) gives a lower assessable income by about HKD " +
+          Math.abs(diff).toLocaleString() + ", and is more favourable in this simplified comparison.";
+      }
+      document.getElementById('diffIncome').textContent = diffText;
+
+      document.getElementById('noteRentSuffered').textContent =
+        "When your actual rent is higher than the reimbursed amount, the difference (“rent suffered”) is used here " +
+        "to reduce the rental value, similar to IRD examples. Actual treatment depends on IRD’s final assessment.";
+
+      document.getElementById('results').style.display = 'flex';
+      document.getElementById('comparison').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
